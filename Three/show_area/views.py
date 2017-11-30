@@ -31,3 +31,14 @@ def show_shi(request):
     jsonData = {'jsonData':new_list}
 
     return  JsonResponse(jsonData)
+
+def show_area(requeat):
+    shiid = requeat.GET.get('shiid')
+    areaList = AreaInfo.objects.filter(parent__exact=shiid)
+
+    new_list = []
+    for area in areaList:
+        new_list.append([area.id,area.name])
+
+    jsonData = {'jsonData':new_list}
+    return JsonResponse(jsonData)

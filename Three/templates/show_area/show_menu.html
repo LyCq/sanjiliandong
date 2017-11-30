@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+<head>
+    <meta charset="UTF-8">
+    <title>显示菜单</title>
+    <script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+    <script>
+
+        $(document).ready(
+            function () {
+                var $sheng = $('#sheng').empty();
+                $.get('/getSheng/',function (shengData) {
+                    shengList = shengData.jsonData;
+                    $.each(shengList,function (index,sheng) {
+                        $sheng.append('<option value="'+sheng.id+'">'+sheng.name+'</option>');
+                    });
+                });
+
+                {#省级列表发生改变触发函数#}
+                $('#sheng').change(function () {
+                    {# 获取ｉｄ值 #}
+                    var shengid = $(this).val();
+                    $.get('/getShi/',{'shengid':shengid},function (shiData) {
+{#                        alert(shiData);#}
+                        $('#shi').empty().append('<option value="0">请选择</option>');
+                        {# 获取ｊｓｏｎ列表 #}
+                        var shiList = shiData.jsonData;
+                        $.each(shiList,function (index,shi) {
+                            $('#shi').append('<option value="'+shi[0]+'">'+shi[1]+'</option>');
+
+                        });
+
+                    });
+                });
+
+                {# 市级下拉列表发生变化触发内容 #}
+                $('#shi').change(function () {
+                    var shiid = $('#shi').val();
+                    $.get('/getArea/',{'shiid':shiid},function (areaData) {
+{#                        alert(areaData);#}
+                        $('#qu').empty().append('<option value="0">请选择</option>');
+                        var areaList = areaData.jsonData;
+                        $.each(areaList,function (index,area) {
+                            $('#qu').append('<option value="'+area[0]+'">'+area[1]+'</option>')
+
+                        });
+                    });
+                });
+
+            }
+        );
+    </script>
+</head>
+<body>
+    <select id="sheng">
+        <option value="0">请选择</option>
+    </select>
+    <select id="shi">
+            <option value="0">请选择</option>
+        </select>
+    <select id="qu">
+            <option value="0">请选择</option>
+        </select>
+</body>
+</html>
